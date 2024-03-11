@@ -1,0 +1,115 @@
+import pandas as pd
+import pyodbc
+import os 
+
+# Información de conexión
+server = 'ec0038app05'  # Ejemplo: 'localhost' o '192.168.1.100'
+database = 'SHAYA'
+username = 'python_user'  # Solo si usas autenticación de SQL
+password = 'python_user'  # Solo si usas autenticación de SQL
+
+# Cadena de conexión
+# Para autenticación de Windows, usa Trusted_Connection=yes y omite UID y PWD
+conn_str = f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+
+# Conectar a la base de datos
+conn = pyodbc.connect(conn_str)
+
+# Consulta SQL
+queryO = """ 
+SELECT ITEM_NAME, START_WO, END_WO, PLAN_TYPE_TEXT, CAMPAING, WO_NUMBER
+FROM VT_WELLJOBLOG_en_US
+WHERE YEAR(END_WO) = 2023 AND PLAN_TYPE_TEXT = 'Opex'
+"""
+
+queryC = """ 
+SELECT ITEM_NAME, START_WO, END_WO, PLAN_TYPE_TEXT, CAMPAING, WO_NUMBER
+FROM VT_WELLJOBLOG_en_US
+WHERE YEAR(END_WO) = 2023 AND PLAN_TYPE_TEXT = 'Capex'
+"""
+
+# Leer los datos en un DataFrame
+dfO = pd.read_sql(queryO, conn)
+dfC = pd.read_sql(queryC, conn)
+
+# Cerrar la conexión
+conn.close()
+
+# Divido el DataFrame de actividades Opex en diferentes dataframes según los meses de finalización de los WO
+dfO_Primer_Trimestre = dfO[dfO['END_WO'].dt.month.isin([1,2,3])].copy()
+dfO_Segundo_Trimestre = dfO[dfO['END_WO'].dt.month.isin([4,5,6])].copy()
+dfO_Tercer_Trimestre = dfO[dfO['END_WO'].dt.month.isin([7,8,9])].copy()
+dfO_Cuarto_Trimestre = dfO[dfO['END_WO'].dt.month.isin([10,11,12])].copy()
+
+# Divido el DataFrame de actividades Capex en diferentes dataframes según los meses de finalización de los WO
+dfC_Primer_Trimestre = dfC[dfC['END_WO'].dt.month.isin([1,2,3])].copy()
+dfC_Segundo_Trimestre = dfC[dfC['END_WO'].dt.month.isin([4,5,6])].copy()
+dfC_Tercer_Trimestre = dfC[dfC['END_WO'].dt.month.isin([7,8,9])].copy()
+dfC_Cuarto_Trimestre = dfC[dfC['END_WO'].dt.month.isin([10,11,12])].copy()
+
+# Se filtra el DataFrame de actividades Capex para excluir WO_NUMBER NaN o igual a 0
+dfC_Primer_Trimestre = dfC_Primer_Trimestre[dfC_Primer_Trimestre['WO_NUMBER'].notna() & (dfC_Primer_Trimestre['WO_NUMBER'] != 0)]
+dfC_Segundo_Trimestre = dfC_Segundo_Trimestre[dfC_Segundo_Trimestre['WO_NUMBER'].notna() & (dfC_Segundo_Trimestre['WO_NUMBER'] != 0)]
+dfC_Tercer_Trimestre = dfC_Tercer_Trimestre[dfC_Tercer_Trimestre['WO_NUMBER'].notna() & (dfC_Tercer_Trimestre['WO_NUMBER'] != 0)]
+dfC_Cuarto_Trimestre = dfC_Cuarto_Trimestre[dfC_Cuarto_Trimestre['WO_NUMBER'].notna() & (dfC_Cuarto_Trimestre['WO_NUMBER'] != 0)]
+
+# Directorio donde se crearán las carpetas
+directorio_base = r'\\dir.slb.com\NSA\SAM_Collaborate\EC0037\90_Public\Tests\01 INFORMES TRIMESTRALES'
+
+# Crear la carpeta del año si esta no existía
+ruta_año = os.path.join(directorio_base, 'Reporte Trimestral 2023')
+
+# Función para crear carpetas Opex del año 2023
+def crear_directorios_trimestrales_Opex(df, trimestre):
+
+    # Crear la ruta de la carpeta trimestral dentro de su carpeta de año
+    ruta_trimestre = os.path.join(ruta_año, trimestre)
+    os.makedirs(ruta_trimestre, exist_ok=True)
+
+    # Crear la ruta para reportes trimestrales del tipo OPEX
+    ruta_Opex = os.path.join(ruta_trimestre, '3 Intervenciones con Torre (Pulling)')
+
+    for _, fila in df.iterrows():
+        pozo = fila['ITEM_NAME']
+        # Nos aseguramos de que WO_NUMBER sea un entero y luego lo convertimos a cadena
+        wo_number = int(fila['WO_NUMBER']) if pd.notna(fila['WO_NUMBER']) else None
+        if wo_number is not None:
+            nombre_carpeta = f'{pozo} WO #{wo_number}'
+            ruta_carpeta_pozo = os.path.join(ruta_Opex, nombre_carpeta)
+            os.makedirs(ruta_carpeta_pozo, exist_ok=True)
+
+            # Crear subcarpetas dentro de la carpeta del pozo (Caso: OPEX)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '3.1 Prognosis y Programas'), exist_ok=True)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '3.2 Soporte para inicio de Trabajos'), exist_ok=True)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '3.3 Reportes diarios de ejecución'), exist_ok=True)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '3.4 Diagramas Mecánicos'), exist_ok=True)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '3.5 Registros'), exist_ok=True)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '3.6 Sumarios Finales Pulling'), exist_ok=True)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '3.7 Post Mortem Pozos'), exist_ok=True)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '3.8 Actas de Inicio y Recepción'), exist_ok=True)
+
+# Función para crear carpetas Capex del año 2023
+def crear_directorios_trimestrales_Capex(df, trimestre):
+
+    # Crear la ruta de la carpeta trimestral dentro de su carpeta de año
+    ruta_trimestre = os.path.join(ruta_año, trimestre)
+    os.makedirs(ruta_trimestre, exist_ok=True)
+
+    # Crear la ruta para reportes trimestrales del tipo CAPEX
+    ruta_Capex = os.path.join(ruta_trimestre, '2 Reacondicionamiento de Pozos (Workover CAPEX)')
+
+    for _, fila in df.iterrows():
+        pozo = fila['ITEM_NAME']
+        # Nos aseguramos de que WO_NUMBER sea un entero y luego lo convertimos a cadena
+        wo_number = int(fila['WO_NUMBER']) if pd.notna(fila['WO_NUMBER']) else None
+        if wo_number is not None:
+            nombre_carpeta = f'{pozo} WO #{wo_number}'
+            ruta_carpeta_pozo = os.path.join(ruta_Capex, nombre_carpeta)
+            os.makedirs(ruta_carpeta_pozo, exist_ok=True)
+
+            # Crear subcarpetas dentro de la carpeta del pozo (Caso: CAPEX)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '2.1 Prognosis y Programas'), exist_ok=True)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '2.2 Soporte para inicio de Trabajos'), exist_ok=True)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '2.3 Reportes diarios de ejecución'), exist_ok=True)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '3.4 Sumarios Finales WO'), exist_ok=True)
+            os.makedirs(os.path.join(ruta_carpeta_pozo, '3.5 Actas de Inicio y Recepción'), exist_ok=True)

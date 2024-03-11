@@ -1,0 +1,11 @@
+# Creación de carpetas para cada DataFrame (Caso OPEX)
+crear_directorios_trimestrales_Opex(dfO_Primer_Trimestre, '01. Reporte Trimestral #1 2023')
+crear_directorios_trimestrales_Opex(dfO_Segundo_Trimestre, '02. Reporte Trimestral #2 2023')
+crear_directorios_trimestrales_Opex(dfO_Tercer_Trimestre, '03. Reporte Trimestral #3 2023')
+crear_directorios_trimestrales_Opex(dfO_Cuarto_Trimestre, '04. Reporte Trimestral #4 2023')
+
+# Creación de carpetas para cada DataFrame (Caso CAPEX)
+crear_directorios_trimestrales_Capex(dfC_Primer_Trimestre, '01. Reporte Trimestral #1 2023')
+crear_directorios_trimestrales_Capex(dfC_Segundo_Trimestre, '02. Reporte Trimestral #2 2023')
+crear_directorios_trimestrales_Capex(dfC_Tercer_Trimestre, '03. Reporte Trimestral #3 2023')
+crear_directorios_trimestrales_Capex(dfC_Cuarto_Trimestre, '04. Reporte Trimestral #4 2023')
