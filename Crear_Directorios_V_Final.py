@@ -173,8 +173,9 @@ def copiar_pdf(pozo, wo_number, ruta_destino, tipo_pozo, abandono):
                 ruta_tercera_subcarpeta = encontrar_carpeta_por_prefijo(ruta_segunda_subcarpeta, '1.')
                 if ruta_tercera_subcarpeta:
                     for archivo in os.listdir(ruta_tercera_subcarpeta):
-                        if archivo.endswith('.pdf') or archivo.endswith('.PDF') or "notificaci" in archivo.lower():
-                            shutil.copy(os.path.join(ruta_tercera_subcarpeta, archivo), ruta_destino)
+                        ruta_origen = os.path.join(ruta_tercera_subcarpeta, archivo)
+                        if os.path.isfile(ruta_origen) and (archivo.endswith('.pdf') or archivo.endswith('.PDF') or "notificaci" in archivo.lower()):
+                            shutil.copy(ruta_origen, ruta_destino)
                             estado_documento = 'OK'
 
     # Actualizar el estado del documento en el diccionario para el pozo correspondiente                
@@ -200,8 +201,9 @@ def copiar_pdf_cpi(pozo, ruta_destino):
                 ruta_tercera_subcarpeta = encontrar_carpeta_por_prefijo(ruta_segunda_subcarpeta, '1.')
                 if ruta_tercera_subcarpeta:
                     for archivo in os.listdir(ruta_tercera_subcarpeta):
-                        if archivo.endswith('.pdf') or archivo.endswith('.PDF') or "notificaci" in archivo.lower():
-                            shutil.copy(os.path.join(ruta_tercera_subcarpeta, archivo), ruta_destino)
+                        ruta_origen = os.path.join(ruta_tercera_subcarpeta, archivo)
+                        if os.path.isfile(ruta_origen) and (archivo.endswith('.pdf') or archivo.endswith('.PDF') or "notificaci" in archivo.lower()):
+                            shutil.copy(ruta_origen, ruta_destino)
                             estado_documento = 'OK'
 
     # Actualizar el estado del documento en el diccionario para el pozo correspondiente                        
@@ -230,8 +232,9 @@ def copiar_prognosis_capex(pozo, wo_number, ruta_destino, tipo_pozo, abandono):
             ruta_segunda_subcarpeta = encontrar_carpeta_por_prefijo(ruta_primera_subcarpeta, '2.')
             if ruta_segunda_subcarpeta:
                 for archivo in os.listdir(ruta_segunda_subcarpeta):
-                    if archivo.endswith('.docx') or archivo.endswith('.doc') or archivo.endswith('.DOCX') or archivo.endswith('.DOC') or "propuesta" in archivo.lower():
-                        shutil.copy(os.path.join(ruta_segunda_subcarpeta, archivo), ruta_destino)
+                    ruta_origen = os.path.join(ruta_segunda_subcarpeta, archivo)
+                    if os.path.isfile(ruta_origen) and (archivo.endswith('.docx') or archivo.endswith('.doc') or archivo.endswith('.DOCX') or archivo.endswith('.DOC') or "propuesta" in archivo.lower()):
+                        shutil.copy(ruta_origen, ruta_destino)
                         estado_documento = 'OK'
 
     # Actualizar el estado del documento en el diccionario para el pozo correspondiente       
@@ -254,8 +257,9 @@ def copiar_prognosis_cpi(pozo, ruta_destino):
             ruta_segunda_subcarpeta = encontrar_carpeta_por_prefijo(ruta_primera_subcarpeta, '2.')
             if ruta_segunda_subcarpeta:
                 for archivo in os.listdir(ruta_segunda_subcarpeta):
-                    if archivo.endswith('.docx') or archivo.endswith('.doc') or archivo.endswith('.DOCX') or archivo.endswith('.DOC') or "propuesta" in archivo.lower():
-                        shutil.copy(os.path.join(ruta_segunda_subcarpeta, archivo), ruta_destino)
+                    ruta_origen = os.path.join(ruta_segunda_subcarpeta, archivo)
+                    if os.path.isfile(ruta_origen) and (archivo.endswith('.docx') or archivo.endswith('.doc') or archivo.endswith('.DOCX') or archivo.endswith('.DOC') or "propuesta" in archivo.lower()):
+                        shutil.copy(ruta_origen, ruta_destino)
                         estado_documento = 'OK'
 
     # Actualizar el estado del documento en el diccionario para el pozo correspondiente       
