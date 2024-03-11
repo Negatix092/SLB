@@ -230,7 +230,7 @@ def copiar_prognosis_capex(pozo, wo_number, ruta_destino, tipo_pozo, abandono):
             ruta_segunda_subcarpeta = encontrar_carpeta_por_prefijo(ruta_primera_subcarpeta, '2.')
             if ruta_segunda_subcarpeta:
                 for archivo in os.listdir(ruta_segunda_subcarpeta):
-                    if (archivo.endswith('.docx') or archivo.endswith('.doc') or archivo.endswith('.DOCX') or archivo.endswith('.DOC')) and "propuesta" in archivo.lower():
+                    if archivo.endswith('.docx') or archivo.endswith('.doc') or archivo.endswith('.DOCX') or archivo.endswith('.DOC') or "propuesta" in archivo.lower():
                         shutil.copy(os.path.join(ruta_segunda_subcarpeta, archivo), ruta_destino)
                         estado_documento = 'OK'
 
@@ -254,7 +254,7 @@ def copiar_prognosis_cpi(pozo, ruta_destino):
             ruta_segunda_subcarpeta = encontrar_carpeta_por_prefijo(ruta_primera_subcarpeta, '2.')
             if ruta_segunda_subcarpeta:
                 for archivo in os.listdir(ruta_segunda_subcarpeta):
-                    if (archivo.endswith('.docx') or archivo.endswith('.doc') or archivo.endswith('.DOCX') or archivo.endswith('.DOC')) and "propuesta" in archivo.lower():
+                    if archivo.endswith('.docx') or archivo.endswith('.doc') or archivo.endswith('.DOCX') or archivo.endswith('.DOC') or "propuesta" in archivo.lower():
                         shutil.copy(os.path.join(ruta_segunda_subcarpeta, archivo), ruta_destino)
                         estado_documento = 'OK'
 
