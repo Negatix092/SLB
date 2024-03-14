@@ -902,12 +902,12 @@ def crear_directorios(df, ruta_trimestre, tipo_actividad):
                             ruta_destino_registros = os.path.join(ruta_carpeta_pozo, '3.5 Registros')
                             os.makedirs(ruta_destino_registros, exist_ok=True)
                             copiar_registros(pozo, int(wo_number), ruta_destino_registros, "OPEX", abandono)
-            else:
-                if 'adecua' in abandono.lower():
-                    pozo = f'{pozo} ADECUACION'
-                    estado_documentos[pozo][tipo_actividad][wo_number]['Registros'] = 'N/A'
-                else:
-                    estado_documentos[pozo][tipo_actividad][wo_number]['Registros'] = 'N/A'
+                        else:
+                            if 'adecua' in abandono.lower():
+                                pozo2 = f'{pozo} ADECUACION'
+                                estado_documentos[pozo2][tipo_actividad][wo_number]['Registros'] = 'N/A'
+                            else:
+                                estado_documentos[pozo][tipo_actividad][wo_number]['Registros'] = 'N/A'
 
     
 
@@ -946,7 +946,7 @@ def generar_informe_excel(estado_documentos, año_interes, trimestre_actual, dir
                 data.append([pozo, tipo, None] + list(cpi_info.values())) 
             else:
                 for wo_number, values in tipo_info.items():
-                    row = [pozo, tipo, wo_number] + list(values.values()) 
+                    row = [pozo, tipo, wo_number] + list(values.values())
                     data.append(row)
                     
     # se crea el dataframe
