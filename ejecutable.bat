@@ -1,2 +1,3 @@
 @echo off
-python "C:\Users\aperez143\OneDrive - SLB\Alex Perez\Reporte trimestral\Documentos\raw_code\script.py"
+python "%USERPROFILE%\Documents\Directorio_Elegido\Crear_Directorios_V_Final.py"
+pause
